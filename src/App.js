@@ -24,7 +24,7 @@ function App() {
       setLoading(true);
       const response = await fetch(`${API_URL}?q=${searchQuery}&page=${pageNum}&per_page=${itemsPerPage}`, {
         headers: {
-          Authorization: `token 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`,
+          Authorization: `token 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`,
         },
       });
       if (!response.ok) {
