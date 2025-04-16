@@ -2,6 +2,194 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom Animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes float-delayed {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes gradient-x {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-5px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(5px);
+  }
+}
+
+/* Animation Classes */
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float-delayed 4s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+.animate-float-slow {
+  animation: float-slow 5s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+.animate-gradient-x {
+  background-size: 200% 200%;
+  animation: gradient-x 15s ease infinite;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out forwards;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s ease-out forwards;
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+/* Glass Effect Components */
+.glass-card {
+  @apply bg-white/5 backdrop-blur-lg rounded-xl border border-white/10;
+  transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+  @apply bg-white/10 border-white/20 shadow-lg;
+  transform: translateY(-2px);
+}
+
+.glass-input {
+  @apply bg-white/5 backdrop-blur-lg text-white placeholder-gray-400 
+         border border-white/10 rounded-lg px-4 py-2
+         focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50;
+  transition: all 0.3s ease;
+}
+
+.glass-input:hover {
+  @apply border-white/20 bg-white/10;
+}
+
+.glass-button {
+  @apply bg-gradient-to-r from-pink-500 to-purple-500 
+         text-white font-medium rounded-lg 
+         hover:from-pink-600 hover:to-purple-600
+         focus:outline-none focus:ring-2 focus:ring-purple-500/50;
+  transition: all 0.3s ease;
+}
+
+.glass-button:hover {
+  @apply shadow-lg shadow-purple-500/25;
+  transform: translateY(-1px);
+}
+
+.glass-button:active {
+  transform: translateY(0);
+}
+
+/* Custom Utilities */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-gpu {
+  transform: translate3d(0, 0, 0);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-purple-900/50;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-purple-600 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-purple-500;
+}
+
+/* Selection Color */
+::selection {
+  @apply bg-purple-500/30 text-white;
+}
+
+/* Navbar Animation */
+.navbar {
+  @apply sticky top-0 z-50 transition-all duration-300;
+  background: linear-gradient(90deg, #1e3a8a, #9333ea, #1e3a8a);
+  background-size: 200% 200%;
+  animation: gradient-x 15s ease infinite;
+}
+
+.navbar:hover {
+  @apply shadow-lg shadow-purple-500/20;
+}
+
 /* Gradient Button Animation */
 @keyframes gradientShift {
   0% {
@@ -43,33 +231,6 @@
   color: #fff;
   border-color: #FF69B4;
   box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
-}
-
-/* Navbar Animation */
-@keyframes backgroundShift {
-  0% {
-    background-color: #3b82f6; /* Initial blue */
-  }
-  50% {
-    background-color: #9333ea; /* Purple mid-color */
-  }
-  100% {
-    background-color: #3b82f6; /* Back to blue */
-  }
-}
-
-.navbar {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  transition: background-color 0.5s ease, box-shadow 0.3s ease;
-  background-color: #1e3a8a;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.navbar:hover {
-  animation: backgroundShift 5s infinite;
-  box-shadow: 0 8px 16px rgba(59, 130, 246, 0.4);
 }
 
 /* Navbar Hover Links */

@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from './components/Navbar';
 import Search from './components/Search';
-import Footer from './components/Footer';
 import Filters from './components/Filters';
 import RepositoryCard from './components/RepositoryCard';
+import Footer from './components/Footer';
 
 const API_URL = 'https://api.github.com/search/repositories';
 
@@ -22,20 +21,31 @@ function App() {
   const fetchRepositories = async (searchQuery, pageNum) => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_URL}?q=${searchQuery}&page=${pageNum}&per_page=${itemsPerPage}`, {
+      const encodedQuery = encodeURIComponent(searchQuery);
+      const url = `${API_URL}?q=${encodedQuery}&page=${pageNum}&per_page=${itemsPerPage}`;
+      
+      console.log('API URL:', url); // Debug log
+      console.log('Token present:', !!process.env.REACT_APP_GITHUB_TOKEN); // Debug log
+
+      const response = await fetch(url, {
         headers: {
           Authorization: `token ${process.env.REACT_APP_GITHUB_TOKEN}`,
+          'Accept': 'application/vnd.github.v3+json'
         },
       });
-      if (!response.ok) {console.log(import.meta.env.REACT)
-        throw new Error('Network response was not ok');
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`GitHub API Error: ${errorData.message || response.statusText}`);
       }
+
       const data = await response.json();
       setRepositories(data.items || []);
-      setTotalPages(Math.ceil(data.total_count / itemsPerPage)); // Set total pages
+      setTotalPages(Math.ceil(data.total_count / itemsPerPage));
       setError(null);
     } catch (error) {
-      setError('There has been a problem with your fetch operation: ' + error.message);
+      console.error('API Error:', error); // Debug log
+      setError(`Error: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -73,62 +83,128 @@ function App() {
   };
 
   return (
-    <div className="App bg-primary flex flex-col min-h-screen">
-      <Navbar />
-      <header className="App-header flex items-center justify-center bg-primary">
-        <h1
-          className="text-9xl font-bold text-primary-content mt-10 mb-10 animate-title text-pink-500"
-          style={{ fontFamily: 'Poppins, sans-serif' }}
-        >
-          {Array.from("Repo  Scout").map((char, index) => (
-            <span
-              key={index}
-              className="inline-block transition-all duration-500 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r from-purple-400 via-pink-500 to-green-500"
-            >
-              {char}
+    <div className="min-h-screen bg-gradient-to-b from-purple-900 via-purple-800 to-purple-900 text-white relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        {/* Animated gradient orbs */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse delay-2000"></div>
+        
+        {/* Animated grid pattern */}
+        <div className="absolute w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxjaXJjbGUgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iLjEiIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvc3ZnPg==')] opacity-10"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-pink-500/30 via-purple-500/30 to-blue-500/30 animate-gradient-x"></div>
+      </div>
+
+      <div className="relative z-10">
+        <header className="container mx-auto px-4 py-16 text-center">
+          {/* Floating elements */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-10 left-10 w-4 h-4 bg-pink-500/50 rounded-full animate-float"></div>
+            <div className="absolute top-20 right-20 w-6 h-6 bg-purple-500/50 rounded-full animate-float-delayed"></div>
+            <div className="absolute bottom-10 left-1/4 w-8 h-8 bg-blue-500/50 rounded-full animate-float-slow"></div>
+          </div>
+
+          {/* Enhanced title with 3D effect */}
+          <div className="perspective-1000">
+            <h1 className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-400 to-blue-500 animate-gradient-x font-bold text-7xl mb-6 tracking-tight transform-gpu hover:scale-105 transition-all duration-500 ease-out">
+              <span className="inline-block hover:scale-110 hover:-rotate-6 transition-transform duration-300">R</span>
+              <span className="inline-block hover:scale-110 hover:-rotate-3 transition-transform duration-300 delay-75">e</span>
+              <span className="inline-block hover:scale-110 hover:rotate-3 transition-transform duration-300 delay-100">p</span>
+              <span className="inline-block hover:scale-110 hover:rotate-6 transition-transform duration-300 delay-150">o</span>
+              <span className="inline-block transition-transform duration-300 delay-200"> </span>
+              <span className="inline-block hover:scale-110 hover:-rotate-6 transition-transform duration-300 delay-300">S</span>
+              <span className="inline-block hover:scale-110 hover:-rotate-3 transition-transform duration-300 delay-400">c</span>
+              <span className="inline-block hover:scale-110 hover:rotate-3 transition-transform duration-300 delay-500">o</span>
+              <span className="inline-block hover:scale-110 hover:rotate-6 transition-transform duration-300 delay-600">u</span>
+              <span className="inline-block hover:scale-110 hover:rotate-9 transition-transform duration-300 delay-700">t</span>
+            </h1>
+          </div>
+          
+          {/* Enhanced subtitle with glow effect */}
+          <p className="text-2xl text-gray-300 mb-12 opacity-0 animate-fade-in-up relative group" 
+             style={{ animationDelay: '0.5s', animationFillMode: 'forwards' }}>
+            <span className="relative inline-block group-hover:text-white transition-colors duration-300">
+              Discover amazing GitHub repositories with our powerful search tool
+              <span className="absolute inset-0 bg-gradient-to-r from-pink-500/0 via-purple-500/20 to-blue-500/0 blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
             </span>
-          ))}
-        </h1>
+          </p>
 
-      </header>
-      <div className="flex justify-center p-4">
-        <Search onSearch={handleSearch} /> 
-      </div>
-      <Filters onFilter={handleFilter} /> 
-      <div className="p-6 flex-grow">
-        {loading && <p className="text-center text-white">Loading...</p>}
-        {error && <p className="text-center text-red-500">{error}</p>}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {repositories.length > 0 ? (
-            repositories.map((repo) => (
-              <RepositoryCard key={repo.id} repo={repo} />
-            ))
-          ) : (
-            !loading && !error && <p className="text-center text-black ">No repositories found.</p>
-          )}
-        </div>
+          {/* Enhanced search container with glass effect */}
+          <div className="relative max-w-3xl mx-auto opacity-0 animate-fade-in-up transform hover:scale-102 transition-all duration-300" 
+               style={{ animationDelay: '0.7s', animationFillMode: 'forwards' }}>
+            <div className="absolute inset-0 bg-gradient-to-r from-pink-500/10 via-purple-500/10 to-blue-500/10 rounded-xl blur"></div>
+            <Search onSearch={handleSearch} />
+          </div>
+
+          {/* Enhanced filters with floating effect */}
+          <div className="mt-8 opacity-0 animate-fade-in-up transform hover:translate-y-[-2px] transition-all duration-300" 
+               style={{ animationDelay: '0.9s', animationFillMode: 'forwards' }}>
+            <Filters onFilter={handleFilter} />
+          </div>
+        </header>
+
+        {/* Enhanced error message */}
+        {error && (
+          <div className="container mx-auto px-4 mb-8">
+            <div className="bg-red-500/10 backdrop-blur-md border border-red-500/20 text-red-400 px-6 py-4 rounded-xl animate-shake shadow-lg shadow-red-500/5">
+              <div className="flex items-center space-x-3">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+                <span>{error}</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Loading indicator */}
+        {loading && (
+          <div className="container mx-auto px-4 py-12 flex justify-center">
+            <div className="relative">
+              <div className="w-16 h-16 border-4 border-purple-500/20 border-t-purple-500 rounded-full animate-spin"></div>
+              <div className="absolute inset-0 w-16 h-16 border-4 border-pink-500/20 border-b-pink-500 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
+            </div>
+          </div>
+        )}
+
+        {/* Enhanced repository grid with staggered animations */}
+        {!loading && repositories.length > 0 && (
+          <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            {repositories.map((repo, index) => (
+              <div key={repo.id} 
+                   className="opacity-0 animate-fade-in-up transform hover:translate-y-[-4px] hover:shadow-xl transition-all duration-300" 
+                   style={{ animationDelay: `${0.2 * index}s`, animationFillMode: 'forwards' }}>
+                <RepositoryCard repo={repo} />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Enhanced pagination buttons */}
+        {repositories.length > 0 && (
+          <div className="container mx-auto px-4 py-8 flex justify-center space-x-6">
+            <button
+              onClick={handlePreviousPage}
+              disabled={page === 1}
+              className="glass-button px-8 py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 hover:shadow-lg hover:shadow-pink-500/20 active:scale-95 transition-all duration-300"
+            >
+              ← Previous
+            </button>
+            <div className="flex items-center px-6 py-2 bg-white/5 rounded-lg backdrop-blur-sm">
+              <span className="text-gray-300">Page {page} of {totalPages}</span>
+            </div>
+            <button
+              onClick={handleNextPage}
+              disabled={page >= totalPages}
+              className="glass-button px-8 py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 hover:shadow-lg hover:shadow-blue-500/20 active:scale-95 transition-all duration-300"
+            >
+              Next →
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Pagination controls */}
-      <div className="flex justify-center items-center space-x-4 py-4">
-        <button
-          onClick={handlePreviousPage}
-          className="bg-pink-600 text-white px-4 py-2 rounded-md"
-          disabled={page === 1}
-        >
-          Previous
-        </button>
-        <span className="text-black">
-          Page {page} of {totalPages}
-        </span>
-        <button
-          onClick={handleNextPage}
-          className="bg-pink-600 text-white px-4 py-2 rounded-md"
-          disabled={page === totalPages}
-        >
-          Next
-        </button>
-      </div>
       <Footer />
     </div>
   );
