@@ -24,7 +24,7 @@ function App() {
       setLoading(true);
       const response = await fetch(`${API_URL}?q=${searchQuery}&page=${pageNum}&per_page=${itemsPerPage}`, {
         headers: {
-          Authorization: `token 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`,
+          Authorization: `token ${process.env.REACT_APP_GITHUB_TOKEN}`,
         },
       });
       if (!response.ok) {console.log(import.meta.env.REACT)
